@@ -4,6 +4,9 @@ let canvasWidth = 660;
 let canvasHeight = 540;
 let square = 30;
 let direction;
+let snake = [];
+let snakeLength = 0;
+let spot = false;
 
 function gameInput(event) {
     let keypress = event.key;
@@ -53,21 +56,20 @@ function createWall() {
 }
 createWall();
 
-class Snake{
-    constructor(x,y,next)
+class Vector2{
+    constructor(x,y)
     {
         this.x = x;
         this.y = y;
-        this.next = next;
     }
 }
-
-class snake{
-    constructor(x,y,next)
+class Snake{
+    constructor(x,y,next,pastPosition)
     {
         this.x = x;
         this.y = y;
         this.next = next;
+        this.pastPosition = pastPosition;
     }
 }
 
@@ -95,6 +97,16 @@ function drawSnake(x,y) {
     ctx.closePath();
 }
 
+function drawSpot(x,y) {
+    ctx.beginPath();
+    ctx.arc(x,y,10,0,Math.PI*2,false);
+    ctx.fillStyle = 'red';
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
+}
+
 function gameStart() {
     let spawnHeadX = Math.floor(((canvasWidth-square*3)*Math.random())/square)*square+square*1.5;
     let spawnHeadY = Math.floor(((canvasHeight-square*3)*Math.random())/square)*square+square*1.5;
@@ -103,31 +115,93 @@ function gameStart() {
     setInterval(() => {
         switch (direction) {
             case "up":
-                console.log("up");
+                // console.log("up");
                 ctx.clearRect(square,square,canvasWidth-square*2,canvasHeight-square*2);
                 drawSnake(snakeHead.x,snakeHead.y-square);
-                snakeHead.y = snakeHead.y-square;
+                for (let p = snakeHead; p !=null ; p = p.next) {
+                    p.pastPosition = new Vector2(p.x,p.y);
+                    if (p.next!=null) {
+                        p.next.x = p.pastPosition.x;
+                        p.next.y = p.pastPosition.y;
+                        drawSnake(p.next.x,p.next.y);
+                    }
+                }
+                for (let p = snakeHead; p != null ; p = p.next) {
+                    p.y = p.y - square;
+                }
+                // console.log(snakeHead.y);
                 break;
             case "down":
-                console.log("down");
+                // console.log("down");
                 ctx.clearRect(square,square,canvasWidth-square*2,canvasHeight-square*2);
                 drawSnake(snakeHead.x,snakeHead.y+square);
-                snakeHead.y = snakeHead.y+square;
+                for (let p = snakeHead; p !=null ; p = p.next) {
+                    p.pastPosition = new Vector2(p.x,p.y);
+                    if (p.next!=null) {
+                        p.next.x = p.pastPosition.x;
+                        p.next.y = p.pastPosition.y;
+                        drawSnake(p.next.x,p.next.y);
+                    }
+                }
+                for (let p = snakeHead; p !=null ; p = p.next) {
+                    p.y = p.y + square;
+                }
                 break;
             case "left":
-                console.log("left");
+                // console.log("left");
                 ctx.clearRect(square,square,canvasWidth-square*2,canvasHeight-square*2);
                 drawSnake(snakeHead.x-square,snakeHead.y);
-                snakeHead.x = snakeHead.x-square;
+                for (let p = snakeHead; p !=null ; p = p.next) {
+                    p.pastPosition = new Vector2(p.x,p.y);
+                    if (p.next!=null) {
+                        p.next.x = p.pastPosition.x;
+                        p.next.y = p.pastPosition.y;
+                        drawSnake(p.next.x,p.next.y);
+                    }
+                }
+                for (let p = snakeHead; p !=null ; p = p.next) {
+                    p.x = p.x - square;
+                }
                 break;
             case "right":
-                console.log("right");
+                // console.log("right");
                 ctx.clearRect(square,square,canvasWidth-square*2,canvasHeight-square*2);
                 drawSnake(snakeHead.x+square,snakeHead.y);
-                snakeHead.x = snakeHead.x+square;
+                for (let p = snakeHead; p !=null ; p = p.next) {
+                    p.pastPosition = new Vector2(p.x,p.y);
+                    if (p.next!=null) {
+                        p.next.x = p.pastPosition.x;
+                        p.next.y = p.pastPosition.y;
+                        drawSnake(p.next.x,p.next.y);
+                    }
+                }
+                for (let p = snakeHead; p !=null ; p = p.next) {
+                    p.x = p.x + square;
+                }
                 break;
             default:
                 break;
+        }
+    }, 300);
+    let spawnSpotX = Math.floor(((canvasWidth-square*3)*Math.random())/square)*square+square*1.5;
+    let spawnSpotY = Math.floor(((canvasHeight-square*3)*Math.random())/square)*square+square*1.5;
+    setInterval(() => {
+        if (spot == false) {
+            drawSpot(spawnSpotX,spawnSpotY);
+        }
+    }, 600);
+    setInterval(() => {
+        if (snakeHead.x==spawnSpotX&&snakeHead.y==spawnSpotY) {
+            for (let p = snakeHead; p !=null ; p = p.next) {
+                // console.log(p.pastPosition.x)
+                if (p.next==null) {
+                    console.log(snakeHead);
+                    console.log(p);
+                    console.log("stop");
+                    p.next = new Snake(p.pastPosition.x,p.pastPosition.y,null);
+                    break;
+                }
+            }
         }
     }, 300);
 }
