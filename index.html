@@ -5,9 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake</title>
+    <style>
+        body{
+            margin: 0px;
+        }
+        .disable{
+            display: none !important;
+        }
+    </style>
 </head>
 <body onkeypress="gameInput(event)">
     <canvas id="Canvas" width="660px" height="540px" style="position: relative;top: 50px;left: 200px;border: 1px solid blue;background-color: seashell;" ></canvas>
+    <div id="gameOver" style="position: absolute;width: 660px;height: 540px;
+    background-color: whitesmoke;opacity: 50%;z-index: 1;top: 50px;left: 200px;
+    display: flex;justify-content: center;align-items: center;" class="disable">
+        <span style="font-size: 20px;">GameOver</span>
+        <button id="restart">Restart</button>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

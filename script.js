@@ -5,22 +5,35 @@ let canvasHeight = 540;
 let square = 30;
 let direction;
 let snake = [];
-let snakeLength = 0;
 let spot = false;
+let timeForAFrame = 150;
+let snakeLength = 1;
 
 function gameInput(event) {
     let keypress = event.key;
     switch (keypress) {
         case "w":
+            if (direction == "down") {
+                break;
+            }
             direction = "up";
             break;
         case "s":
+            if (direction == "up") {
+                break;
+            }
             direction = "down";
             break;
         case "a":
+            if (direction == "right") {
+                break;
+            }
             direction = "left";
             break;
         case "d":
+            if (direction == "left") {
+                break;
+            }
             direction = "right";
             break;
         default:
@@ -50,7 +63,7 @@ function createWall() {
         else
         {
             drawSquare(i*square,0);
-            drawSquare(i*square,canvasHeight-30);
+            drawSquare(i*square,canvasHeight-square);
         }
     }
 }
@@ -73,23 +86,9 @@ class Snake{
     }
 }
 
-class Cell{
-    constructor(x,y,top,left,right,bottom)
-    {        
-        this.x = x;
-        this.y = y;
-        this.top = top;
-        this.left = left;
-        this.right = right;
-        this.bottom = bottom;      
-    }
-    snake = false;
-    spot = false;
-}
-
 function drawSnake(x,y) {
     ctx.beginPath();
-    ctx.arc(x,y,15,0,Math.PI*2,false);
+    ctx.arc(x,y,square/2,0,Math.PI*2,false);
     ctx.fillStyle = 'green';
     ctx.strokeStyle = 'black';
     ctx.stroke();
@@ -99,7 +98,7 @@ function drawSnake(x,y) {
 
 function drawSpot(x,y) {
     ctx.beginPath();
-    ctx.arc(x,y,10,0,Math.PI*2,false);
+    ctx.arc(x,y,square/2.5,Math.PI*2,false);
     ctx.fillStyle = 'red';
     ctx.strokeStyle = 'black';
     ctx.stroke();
@@ -107,12 +106,21 @@ function drawSpot(x,y) {
     ctx.closePath();
 }
 
+function gameOver(move,spawnSpot,newSnakeNode) {
+    let gameOverScreen = document.getElementById("gameOver");
+    clearInterval(move);
+    clearInterval(spawnSpot);
+    clearInterval(newSnakeNode);
+    gameOverScreen.classList.remove("disable");
+}
+
+
 function gameStart() {
     let spawnHeadX = Math.floor(((canvasWidth-square*3)*Math.random())/square)*square+square*1.5;
     let spawnHeadY = Math.floor(((canvasHeight-square*3)*Math.random())/square)*square+square*1.5;
     let snakeHead = new Snake(spawnHeadX,spawnHeadY,null);
     drawSnake(spawnHeadX,spawnHeadY);
-    setInterval(() => {
+    var move = setInterval(() => {
         switch (direction) {
             case "up":
                 // console.log("up");
@@ -173,16 +181,17 @@ function gameStart() {
                 break;
             default:
                 break;
-        }
-    }, 300);
+        };
+    }, timeForAFrame);
     let spawnSpotX = Math.floor(((canvasWidth-square*3)*Math.random())/square)*square+square*1.5;
     let spawnSpotY = Math.floor(((canvasHeight-square*3)*Math.random())/square)*square+square*1.5;
-    setInterval(() => {
+    var spawnSpot = setInterval(() => {
         if (spot == false) {
             drawSpot(spawnSpotX,spawnSpotY);
         }
-    }, 600);
-    setInterval(() => {
+    }, timeForAFrame*2);
+
+    var newSnakeNode = setInterval(() => {
         if (snakeHead.x==spawnSpotX&&snakeHead.y==spawnSpotY) {
             for (let p = snakeHead; p !=null ; p = p.next) {
                 // console.log(p.pastPosition.x)
@@ -190,13 +199,30 @@ function gameStart() {
                     const nextX = p.pastPosition.x;
                     const nextY = p.pastPosition.y;
                     p.next = new Snake(nextX,nextY,null);
+                    snakeLength++;
                     spawnSpotX = Math.floor(((canvasWidth-square*3)*Math.random())/square)*square+square*1.5;
                     spawnSpotY = Math.floor(((canvasHeight-square*3)*Math.random())/square)*square+square*1.5;
                     break;
                 }
             }
         }
-    }, 300);
+    }, timeForAFrame);
+    var checkGameOver = setInterval(() => {
+        if ((snakeHead.x<square*1.5||snakeHead.x>canvasWidth-square*1.5)||(snakeHead.y<square*1.5||snakeHead.y>canvasHeight-square*1.5)) {
+            gameOver(move,spawnSpot,newSnakeNode);
+        }
+        for (let p = snakeHead.next;p!=null ; p = p.next) {
+            if (snakeHead.x==p.x&&snakeHead.y==p.y) {
+                gameOver(move,spawnSpot,newSnakeNode);
+            }
+        }
+    },timeForAFrame);
+}
+
+function gameRestart(params) {
+    let gameOverScreen = document.getElementById("gameOver");
+    gameOverScreen.classList.add("disable");
+    gameStart();
 }
 
 gameStart();
