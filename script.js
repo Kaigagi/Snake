@@ -106,12 +106,21 @@ function drawSpot(x,y) {
     ctx.closePath();
 }
 
-function gameOver(move,spawnSpot,newSnakeNode) {
+function deleteSnake(node) {
+    if (node == null) {
+        deleteSnake(node);
+    }
+    deleteSnake(node.next);
+}
+
+function gameOver(move,spawnSpot,newSnakeNode,checkGameOver,snakeHead) {
     let gameOverScreen = document.getElementById("gameOver");
     clearInterval(move);
     clearInterval(spawnSpot);
     clearInterval(newSnakeNode);
+    clearInterval(checkGameOver);
     gameOverScreen.classList.remove("disable");
+    deleteSnake(snakeHead);
 }
 
 
@@ -209,19 +218,22 @@ function gameStart() {
     }, timeForAFrame);
     var checkGameOver = setInterval(() => {
         if ((snakeHead.x<square*1.5||snakeHead.x>canvasWidth-square*1.5)||(snakeHead.y<square*1.5||snakeHead.y>canvasHeight-square*1.5)) {
-            gameOver(move,spawnSpot,newSnakeNode);
+            gameOver(move,spawnSpot,newSnakeNode,checkGameOver,snakeHead);
         }
         for (let p = snakeHead.next;p!=null ; p = p.next) {
             if (snakeHead.x==p.x&&snakeHead.y==p.y) {
-                gameOver(move,spawnSpot,newSnakeNode);
+                gameOver(move,spawnSpot,newSnakeNode,checkGameOver,snakeHead);
             }
         }
     },timeForAFrame);
 }
 
-function gameRestart(params) {
+function gameRestart() {
     let gameOverScreen = document.getElementById("gameOver");
     gameOverScreen.classList.add("disable");
+    direction = "none";
+    ctx.clearRect(0,0,canvasWidth,canvasHeight);
+    createWall();
     gameStart();
 }
 
