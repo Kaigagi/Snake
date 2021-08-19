@@ -53,6 +53,18 @@
             top: 10px;
             left: 10px;
         }
+        #scoreBoard{
+            width: 200px;
+            height: 100vh;
+            background-color: #bfa745;
+            border: black solid 1px;
+            display: flex;
+            justify-content: center;
+        }
+        #scoreText{
+            font-size: 20px;
+            margin-top: 100px;
+        }
     </style>
 </head>
 <body onkeypress="gameInput(event)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
@@ -61,6 +73,9 @@
     <div id="gameOver" class="disable">
         <h2 style="font-size: 20px;">GameOver</h2> 
         <button id="restart" onclick="gameRestart()"  ontouchstart="gameRestart()">Restart</button>
+    </div>
+    <div id="scoreBoard">
+        <div id="scoreText">SCORE: <span id="Score"></span></div>
     </div>
     <script src="script.js"></script>
 </body>

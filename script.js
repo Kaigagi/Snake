@@ -375,6 +375,12 @@ function moveSnake() {
     };
 }
 
+let score = 1;
+function scoreIncrease() {
+    let scoreBoard = document.getElementById("Score");
+    scoreBoard.innerHTML = ++score;
+}
+
 function newSnake() {
     if (snakeHead.x.toFixed(0)==spawnSpotX.toFixed(0)&&snakeHead.y.toFixed(0)==spawnSpotY.toFixed(0)) {
         for (let p = snakeHead; p !=null ; p = p.next) {
@@ -383,6 +389,7 @@ function newSnake() {
                 const nextX = p.pastPosition.x;
                 const nextY = p.pastPosition.y;
                 p.next = new Snake(nextX,nextY,null,p);
+                scoreIncrease();
                 snakeLength++;
                 spawnSpotX = Math.floor(((square*22-square*3)*Math.random())/square)*square+square*1.5;
                 spawnSpotY = Math.floor(((square*22-square*3)*Math.random())/square)*square+square*1.5;
