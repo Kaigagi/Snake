@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake</title>
+    <img src="./Assets/wallTile.png" style="display: none;">
+    <img src="./Assets/snakeBody.png" style="display: none;">
+    <img src="./Assets/snakeBody2.png" style="display: none;">
+    <img src="./Assets/snakeHead.png" style="display: none;">
     <style>
         body{
             margin: 0px;
@@ -13,7 +17,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: black;
+            background-color: #D1AB7E;
         }
         .disable{
             display: none !important;
@@ -25,8 +29,10 @@
             background-color: whitesmoke; 
             opacity: 50%; 
             z-index: 1;
-            top: (100vh-100vmin)/2px;
-            left: (100vw-100vmin)/2px;
+            top: 50%;
+            left: 50%;
+            margin-top: -49vmin;
+            margin-left: -49vmin;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -43,18 +49,18 @@
             width: 100px;
             font-size: 20px;
             border-radius: 10px;
-            position: relative;
+            position: absolute;
             top: 10px;
             left: 10px;
         }
     </style>
 </head>
-<body onkeypress="gameInput(event)">
+<body onkeypress="gameInput(event)" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
     <canvas id="Canvas" style="border: 1px solid blue;background-color: seashell;" ></canvas>
-    <button id="pause" onclick="Pause()">Pause</button>
+    <button id="pause" onclick="Pause()" ontouchstart="Pause()">Pause</button>
     <div id="gameOver" class="disable">
         <h2 style="font-size: 20px;">GameOver</h2> 
-        <button id="restart" onclick="gameRestart()"  >Restart</button>
+        <button id="restart" onclick="gameRestart()"  ontouchstart="gameRestart()">Restart</button>
     </div>
     <script src="script.js"></script>
 </body>
