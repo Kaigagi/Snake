@@ -43,9 +43,16 @@ function resize() {
     canvas.width = canvasWidth;
     let square = canvasWidth/22;
 }
-
+let NoMoreInput = false;
 function gameInput(event) {
     let keypress = event.key;
+    if(NoMoreInput){
+        return;
+    }
+    NoMoreInput = true;
+    setTimeout(() => {
+        NoMoreInput = false;
+    }, timeForAFrame);
     switch (keypress) {
         case "w":
             if (direction == "down") {
@@ -124,7 +131,7 @@ function handleTouchStart(event) {
     event.preventDefault()
     // console.log(mousedownY);
 }
-let wallSrc = "./Assets/wallTile.png"
+let wallSrc = "./Assets/green-tile.png"
 const wallTile = new Image();
 wallTile.src = wallSrc;
 function drawSquare(x,y) {
